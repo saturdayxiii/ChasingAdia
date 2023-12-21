@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Visual Novel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			background-color: black;
+            background-image: url("resources/bgRoom.webp");
+			background-size: cover;
+            
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+        }
+
+        #colorFade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			z-index: 999;
+            pointer-events: none;
+            background-color: rgba(0, 0, 0, 1); /* Set initial opacity to 1 */
+            transition: opacity 2s ease-in-out; /* Add a transition for smooth opacity change */
+        }
+		
+		#overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			z-index: 99;
+            pointer-events: none;
+            background-color: rgba(0, 0, 0, 1); /* Set initial opacity to 1 */
+            transition: opacity 2s ease-in-out; /* Add a transition for smooth opacity change */
+        }
+
+        #story-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 20%;
+			z-index: 100;
+            border: 2px solid blue;
+            border-radius: 25px;
+            background-color: white;
+            /* overflow: hidden;*/
+            display: flex;
+            flex-direction: column; /* Ensure choices stack vertically */
+            align-items: center; /* Center content horizontally */
+            justify-content: flex-end; /* Align content to the bottom of the container */
+        }
+
+        #story {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 10px;
+            cursor: pointer;
+            height: 80%;
+            overflow-y: auto;
+        }
+
+        #speaker {
+            display: none;
+            position: absolute;
+            left: 2%;
+            top: 0;
+			transform: translateY(-95%);
+            width: 15%;
+			z-index: 101;
+            font-size: 20px;
+            padding: 5px;
+            border-style: solid;
+            border-color: blue;
+            border-width: 2px 2px 0 2px;
+			border-radius: 10px;
+			background-color: white;
+        }
+
+        .choice {
+            font-size: 16px;
+			color: black;
+            margin: 5px;
+            cursor: pointer;
+            text-decoration: underline;
+            width: 100%; /* Ensure choices take full width */
+        }
+
+        .base {
+            width: 70%;
+            height: 70%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+			z-index: 2;
+            transition: transform 1s ease-in-out;
+        }
+
+        #adia {
+            background-image: url("resources/adiaBase.webp");
+            right: -40vw;
+			bottom: 5vh;
+			z-index: 3;
+        }
+		#adiaFace {
+            background-image: url("resources/adiaFaceScowl.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaHairBack {
+            background-image: url("resources/adiaHairBack.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaHair {
+            background-image: url("resources/adiaHairWet.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaTop {
+            background-image: url("resources/adiaJacket.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaBottom {
+            background-image: url("resources/adiaPants.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaAccessory {
+            background-image: url("resources/adiaBracelet.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+
+        #rossi {
+            background-image: url("resources/rossiBase.webp");
+            right: -20vw;
+			bottom: 5vh;
+			z-index: 4;
+        }
+		#rossiFace {
+            background-image: url("resources/rossiFaceSmile.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+
+        #gris {
+            background-image: url("resources/grisBase.webp");
+            left: 10vw;
+			bottom: 5vh;
+			z-index: 2;
+        }
+		#grisFace {
+            background-image: url("resources/grisFaceSmile.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#grisTop {
+            background-image: url("resources/grisTop.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#grisBottom {
+            background-image: url("resources/grisBottom.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="background"></div>
+
+<div id="story-container">
+    <div id="speaker"></div>
+    <div id="story">Loading...</div>
+    <div id="choices"></div>
+</div>
+<div id="adia" class="base">
+	<div id="adiaHairBack" class="base"></div>
+	<div id="adiaBottom" class="base"></div>
+	<div id="adiaTop" class="base"></div>
+	<div id="adiaHair" class="base"></div>
+	<div id="adiaAccessory" class="base"></div>
+	<div id="adiaFace" class="base"></div>
+</div>
+<div id="rossi" class="base">
+	<div id="rossiFace" class="base"></div>
+</div>
+<div id="gris" class="base">
+	<div id="grisBottom" class="base"></div>
+	<div id="grisTop" class="base"></div>
+	<div id="grisFace" class="base"></div>
+</div>
+<div id="colorFade"></div>
+
+<script>
+    const characterBases = {
+        adia: document.getElementById('adia'),
+        rossi: document.getElementById('rossi'),
+        gris: document.getElementById('gris'),
+    };
+
+    const background = document.getElementById('background');
+    const storyElement = document.getElementById('story');
+    const speaker = document.getElementById('speaker');
+    const choicesElement = document.getElementById('choices');
+    const colorFade = document.getElementById('colorFade');
+	const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+	const shiftAmount = screenWidth * 0.545;
+
+    colorFade.style.opacity = 1;
+	let getBracelet = 0;
+	let adiaMeet = 0;
+	let adiaMood = 0;
+	let grisMeet = 0;
+	let grisMood = 0;
+	let rossiMood = 0;
+
+    const storyData = [
+    { 
+        mark: 'beginning', speaker: null, text: "Start", choices: [], event: () => {
+			background.style.backgroundImage = 'resources/bgRoom.webp';
+			baseViz('gris', 'none');
+			baseViz('rossi', 'none');
+			baseViz('adia', 'none');
+			animateBase('gris', -100);
+			animateBase('rossi', 100);
+			animateBase('adia', 100);
+        }
+    },
+    { speaker: null, text: "YEEEAAAWWWNN~  Morning all ready?", choices: [], event: () => {
+		colorFade.style.opacity = 0;
+	} },
+	{ speaker: null, text: "I was up late again.", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "Thinking about Adia.", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "She's the coolest person I know!  Too bad she doesn't know I exist.", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "Well, today's a new day.  Maybe I'll run into her.  Maybe I\"ll even talk to her!", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "Where should I go today?", choices: [{ label: "The Park", destination: 'park1' }, {label: "The Pool", destination: 'pool1'}, {label: "Craft Fair", destination: 'fair1'}], event: () => {
+		
+	} },
+	
+	{ mark: 'park1', speaker: null, text: "It's a nice day today.  I want to go to the park.", choices: [], event: () => {
+			colorFade.style.opacity = 1;
+			setTimeout(() => {
+				background.style.backgroundImage = 'url("resources/bgPark.webp")';
+			}, 2000);
+		} },
+	{ speaker: null, text: "What a sunny day!", choices: [], event: () => {
+		colorFade.style.opacity = 0;
+	} },
+	{ speaker: null, text: "I don't see Adia though.  She must be somewhere else.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "I think I see a kid eating gum off the bench...", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "They're looking at me and smiling.", choices: [], event: () => {
+	} },
+	{ mark: 'morningMiss', speaker: null, text: "I'd better leave.", choices: [{ label: "The Park", destination: 'park2' }, {label: "The Pool", destination: 'poolMiss'}, {label: "Craft Fair", destination: 'fair2'}], event: () => {} },
+
+	{ mark: 'fair1', speaker: null, text: "Let's check it out!", choices: [], event: () => {
+			colorFade.style.opacity = 1;
+			setTimeout(() => {
+				background.style.backgroundImage = 'url("resources/bgMarket.webp")';
+			}, 2000);
+		} },
+		{ speaker: null, text: "I almost forgot there was a market today.", choices: [], event: () => {
+		colorFade.style.opacity = 0;
+	} },
+	{ speaker: null, text: "Oh.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "It's reeeeally empty.", choices: [{label: "Better go", destination: 'morningMiss'}], event: () => {
+	} },
+	
+	{ mark: 'pool1', speaker: null, text: "Nothing beats a swim in the morning!", choices: [], event: () => {
+			colorFade.style.opacity = 1;
+			setTimeout(() => {
+				background.style.backgroundImage = 'url("resources/bgPool.webp")';
+			}, 2000);
+	} },
+	{ speaker: null, text: "Ah.  The chlorine smell is always so minimal in the morning.", choices: [], event: () => {
+		colorFade.style.opacity = 0;
+	} },
+	{ speaker: null, text: "Wait.", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "Is that?", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "OMG, it is!  Adia is here!", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "Wow, she swims like a catfish.", choices: [], event: () => {
+		
+	} },
+	{ speaker: null, text: "How should I get her attention?", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'me', text: "H-HEY!  Hey Adia!", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'adia', text: "Umm, hello.<br>Do I know you?", choices: [{ label: "No, but I know you!", destination: 'uNoMe' }, { label: "I'm a neighbor.", destination: 'meNeighbor' }], event: () => {
+		baseViz('adia', 'show');
+		adiaMeet = 1;
+		setTimeout(() => {
+			animateBase('adia', 0);
+		}, 200);
+	} },
+	{ mark: 'uNoMe', speaker: 'me', text: "No, but I know all about you!<br>I follow you, your crafts, and your cat on instagram!<br>Hey, are your brothers here too?", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'adia', text: "Umm... Cool.  I'd better go.", choices: [], event: () => {
+		adiaMood - 3; 
+	} },
+	{ speaker: null, text: "Oh...", choices: [], event: () => {
+		animateBase('adia', 100); 
+		setTimeout(() => {
+			baseViz('adia', 'none');
+		}, 1000);
+	} },
+	{ speaker: null, text: "I feel very demotivated...", choices: [{ label: "oof", destintion: 'morningMiss' }], event: () => {
+		
+	} },
+	{ mark: 'meNeighbor', speaker: 'me', text: "Err, I guess not.  We live in the same neighborhood.  I've seen you around.  I've always wanted to say \"hi\".", choices: [], event: () => {
+	
+	} },
+	{ speaker: 'adia', text: "Cool!  It's nice to meet you!", choices: [], event: () => {
+		adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+	} },
+	{ speaker: 'me', text: "Yah.  You too!", choices: [], event: () => {
+	
+	} },
+	{ speaker: 'me', text: "I've seen your crafts online.  They are very coo-", choices: [], event: () => {
+		adiaFace.style.backgroundImage = 'url("resources/adiaFaceGrin.webp")';
+	} },
+	{ speaker: null, text: "OI!  Look!  It's Adia!", choices: [], event: () => {
+		storyElement.style.color = 'green';
+		storyElement.style.fontSize = '26px';
+	} },
+	{ speaker: null, text: "Uh oh.  I know that voice.", choices: [], event: () => {
+		storyElement.style.fontSize = '18px';
+	} },
+	{ speaker: 'gris', text: "I didn't think you get up this early.", choices: [], event: () => {
+		baseViz('gris', 'show');
+		grisMeet = 1;
+		setTimeout(() => {
+			animateBase('gris', 0);
+		}, 200);
+	} },
+	{ speaker: 'gris', text: "Who's this wet noodle?", choices: [], event: () => {
+
+	} },
+	{ speaker: null, text: "That's Gris, the show off.", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'adia', text: "Hey Gris, this a neighbor of mine.  Though we've just officially met.", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'gris', text: "Oh nice. Hey, I've been practicing my laps.  Check out how fast I am.", choices: [], event: () => {
+		
+	} },
+	{ speaker: 'adia', text: "Uh, okay.", choices: [], event: () => {
+		animateBase('gris', 2000);
+		adiaFace.style.transform = `scaleX(-1)`;
+		adiaFace.style.left = `-${shiftAmount}px`;
+		setTimeout(() => {
+			animateBase('gris', -0);
+		}, 2000);
+	} },
+	{ speaker: null, text: "Oh geeze.", choices: [], event: () => {
+		animateBase('gris', -500);
+		adiaFace.style.transform = `scaleX(1)`;
+		adiaFace.style.left = `0px`;
+		setTimeout(() => {
+			animateBase('gris', 500);
+		}, 2000);
+	} },
+	{ speaker: null, text: "I don't think he's going to stop.", choices: [], event: () => {
+		animateBase('gris', 0);
+		adiaFace.style.transform = `scaleX(-1)`;
+		adiaFace.style.left = `-${shiftAmount}px`;
+		setTimeout(() => {
+			animateBase('gris', -500);
+		}, 2000);
+	} },
+	{ speaker: null, text: "How can I get Adia's attention again?", choices: [{label: "Hold my breath", destination: 'holdBreathe'}, {label: "Pee", destination: 'pee'}, {label: "Up the ante", destination: 'anteUp'}], event: () => {
+		animateBase('gris', 0);
+		adiaFace.style.transform = `scaleX(1)`;
+		adiaFace.style.left = `0px`;
+		setTimeout(() => {
+			animateBase('gris', 500);
+		}, 2000);
+	} },
+	
+	
+		
+    { speaker: 'gris', text: "You find yourself in a mysterious forest.", choices: [{ label: "Explore the forest", destination: 'explore' }, { label: "Stay put", destination: 'beginning' }], event: () => {} },
+    {
+        mark: 'explore', speaker: null, text: "As you explore, you encounter a talking rabbit.",
+        choices: [{ label: "Talk to the rabbit", destination: 'rabbit' }, { label: "Ignore the rabbit", destination: 'beginning' }],
+        event: () => {
+			baseViz('rossi', 'show');
+			baseViz('gris', 'block');
+			setTimeout(() => {
+				animateBase('rossi', 0);
+				animateBase('gris', 0);
+			}, 200);
+        }
+    },
+    {
+        mark: 'rabbit', speaker: 'rossi', text: "The rabbit leads you to a magical portal.", choices: [{ label: "Enter the portal", destination: 'portal' }, { label: "Decline", destination: 'beginning' }],
+        event: () => {
+            shakeBit('rossi');
+			
+        }
+    },
+    {
+        mark: 'portal', speaker: null, text: "You find yourself in a different world.", choices: [], event: () => {
+			animateBase('rossi', 100);
+			setTimeout(() => {
+				baseViz('rossi', 'none');
+			}, 900);
+		}
+    },
+    {
+        speaker: null, text: "And so the adventure begins...", choices: [],
+        event: () => {
+            colorFade.style.opacity = 1;
+        }
+    },
+    // Add more story entries as needed
+];
+
+	const bookmarkIndexes = {};
+
+	storyData.forEach((entry, index) => {
+		if (entry.mark) {
+			bookmarkIndexes[entry.mark] = index;
+		}
+	});
+
+    let currentIndex = 0;
+
+    const characterTraits = {
+		me: { color: 'black', displayName: 'ME' },
+		rossi: { color: 'brown', displayName: 'ROSSI' },
+		gris: { color: 'green', displayName: 'GRIS' },
+		adia: { color: 'skyblue', displayName: 'ADIA' },
+		// Add more characters as needed
+	};
+
+	function displayStory() {
+		const currentStory = storyData[currentIndex];
+		storyElement.innerHTML = currentStory.text;
+
+		// Apply speaker class based on the current speaker
+		const characterTrait = characterTraits[currentStory.speaker] || {};
+		const { color, displayName } = characterTrait;
+
+		speaker.style.display = displayName ? 'block' : 'none';
+		speaker.style.color = color || 'black';
+		speaker.innerHTML = displayName || '';
+
+		storyElement.style.color = color || 'dimgray';
+
+		if (currentStory.choices.length > 1) {
+			displayChoices(currentStory.choices);
+			document.removeEventListener('click', handleContinue);
+		} else {
+			choicesElement.innerHTML = '';
+			setTimeout(() => {
+				document.addEventListener('click', handleContinue);
+			}, 100);
+		}
+
+		if (currentStory.event) {
+			currentStory.event();
+		}
+	}
+
+    function displayChoices(choices) {
+        choicesElement.innerHTML = '';
+        choices.forEach((choice, index) => {
+            const choiceElement = document.createElement('div');
+            choiceElement.classList.add('choice');
+            choiceElement.textContent = choice.label;
+            choiceElement.addEventListener('click', () => handleChoice(index));
+            choicesElement.appendChild(choiceElement);
+        });
+    }
+
+    function handleChoice(index) {
+		const currentStory = storyData[currentIndex];
+		const destinationBookmark = currentStory.choices[index].destination;
+		const destinationIndex = bookmarkIndexes[destinationBookmark];
+		currentIndex = destinationIndex;
+		displayStory();
+	}
+
+    function handleContinue() {
+    const currentStory = storyData[currentIndex];
+
+    if (currentStory.choices.length > 0) {
+        const destinationBookmark = currentStory.choices[0].destination;
+        const destinationIndex = bookmarkIndexes[destinationBookmark];
+        currentIndex = destinationIndex;
+    } else {
+        currentIndex++;
+    }
+
+    displayStory();
+}
+
+
+    function animateBase(character, translateX) {
+        const base = characterBases[character];
+            base.style.transform = `translateX(${translateX}%)`;
+    }
+
+    function baseViz(character, viz) {
+        const base = characterBases[character];
+		if (viz == 'show') {
+			viz = 'block';
+		}
+            base.style.display = viz;
+    }
+	
+	function shakeBit(elementId) {
+		const element = document.getElementById(elementId);
+
+		if (element) {
+			element.style.animation = 'none'; // Reset animation
+			void element.offsetWidth; // Trigger reflow
+
+			// Apply shake animation after a short delay
+			setTimeout(() => {
+				element.style.animation = 'shake 0.5s 4';
+			}, 200); // Adjust the delay as needed
+		}
+	}
+
+
+    displayStory();
+</script>
+
+</body>
+</html>
