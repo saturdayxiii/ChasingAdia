@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Visual Novel</title>
+    <title>Chasing Adia</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -265,9 +265,9 @@
 			baseViz('gris', 'none');
 			baseViz('rossi', 'none');
 			baseViz('adia', 'none');
-			animateBase('gris', -100);
-			animateBase('rossi', 100);
-			animateBase('adia', 100);
+			animateBase('gris', -100, 0, 0);
+			animateBase('rossi', 100, 0, 0);
+			animateBase('adia', 100, 0, 0);
         }
     },
     { speaker: null, text: "YEEEAAAWWWNN~  Morning all ready?", choices: [], event: () => {
@@ -282,7 +282,7 @@
 	{ speaker: null, text: "She's the coolest person I know!  Too bad she doesn't know I exist.", choices: [], event: () => {
 		
 	} },
-	{ speaker: null, text: "Well, today's a new day.  Maybe I'll run into her.  Maybe I\"ll even talk to her!", choices: [], event: () => {
+	{ speaker: null, text: "Well, today's a new day.  Maybe I'll run into her.  Maybe I\"ll even talk to her!<BR> Wow.", choices: [], event: () => {
 		
 	} },
 	{ speaker: null, text: "Where should I go today?", choices: [{ label: "The Park", destination: 'park1' }, {label: "The Pool", destination: 'pool1'}, {label: "Craft Fair", destination: 'fair1'}], event: () => {
@@ -304,6 +304,8 @@
 	} },
 	{ speaker: null, text: "They're looking at me and smiling.", choices: [], event: () => {
 	} },
+	
+	
 	{ mark: 'morningMiss', speaker: null, text: "I'd better leave.", choices: [{ label: "The Park", destination: 'park2' }, {label: "The Pool", destination: 'poolMiss'}, {label: "Craft Fair", destination: 'fair2'}], event: () => {} },
 
 	{ mark: 'fair1', speaker: null, text: "Let's check it out!", choices: [], event: () => {
@@ -320,6 +322,7 @@
 	{ speaker: null, text: "It's reeeeally empty.", choices: [{label: "Better go", destination: 'morningMiss'}], event: () => {
 	} },
 	
+	//
 	{ mark: 'pool1', speaker: null, text: "Nothing beats a swim in the morning!", choices: [], event: () => {
 			colorFade.style.opacity = 1;
 			setTimeout(() => {
@@ -351,7 +354,7 @@
 		baseViz('adia', 'show');
 		adiaMeet = 1;
 		setTimeout(() => {
-			animateBase('adia', 0);
+			animateBase('adia', 0, 0, 0);
 		}, 200);
 	} },
 	{ mark: 'uNoMe', speaker: 'me', text: "No, but I know all about you!<br>I follow you, your crafts, and your cat on instagram!<br>Hey, are your brothers here too?", choices: [], event: () => {
@@ -361,12 +364,12 @@
 		adiaMood - 3; 
 	} },
 	{ speaker: null, text: "Oh...", choices: [], event: () => {
-		animateBase('adia', 100); 
+		animateBase('adia', 100, 0, 0); 
 		setTimeout(() => {
 			baseViz('adia', 'none');
 		}, 1000);
 	} },
-	{ speaker: null, text: "I feel very demotivated...", choices: [{ label: "oof", destintion: 'morningMiss' }], event: () => {
+	{ speaker: null, text: "I feel very demotivated...", choices: [{ label: "oof", destination: 'morningMiss' }], event: () => {
 		
 	} },
 	{ mark: 'meNeighbor', speaker: 'me', text: "Err, I guess not.  We live in the same neighborhood.  I've seen you around.  I've always wanted to say \"hi\".", choices: [], event: () => {
@@ -392,7 +395,7 @@
 		baseViz('gris', 'show');
 		grisMeet = 1;
 		setTimeout(() => {
-			animateBase('gris', 0);
+			animateBase('gris', 0, 0, 0);
 		}, 200);
 	} },
 	{ speaker: 'gris', text: "Who's this wet noodle?", choices: [], event: () => {
@@ -408,75 +411,233 @@
 		
 	} },
 	{ speaker: 'adia', text: "Uh, okay.", choices: [], event: () => {
-		animateBase('gris', 2000);
+		animateBase('gris', 2000, 0, 0);
 		adiaFace.style.transform = `scaleX(-1)`;
 		adiaFace.style.left = `-${shiftAmount}px`;
 		setTimeout(() => {
-			animateBase('gris', -0);
+			animateBase('gris', -0, 0, 0);
 		}, 2000);
 	} },
 	{ speaker: null, text: "Oh geeze.", choices: [], event: () => {
-		animateBase('gris', -500);
+		animateBase('gris', -500, 0, 0);
 		adiaFace.style.transform = `scaleX(1)`;
 		adiaFace.style.left = `0px`;
 		setTimeout(() => {
-			animateBase('gris', 500);
+			animateBase('gris', 500, 0, 0);
 		}, 2000);
 	} },
 	{ speaker: null, text: "I don't think he's going to stop.", choices: [], event: () => {
-		animateBase('gris', 0);
+		animateBase('gris', 0, 0, 0);
 		adiaFace.style.transform = `scaleX(-1)`;
 		adiaFace.style.left = `-${shiftAmount}px`;
 		setTimeout(() => {
-			animateBase('gris', -500);
+			animateBase('gris', -500, 0, 0);
 		}, 2000);
 	} },
-	{ speaker: null, text: "How can I get Adia's attention again?", choices: [{label: "Hold my breath", destination: 'holdBreathe'}, {label: "Pee", destination: 'pee'}, {label: "Up the ante", destination: 'anteUp'}], event: () => {
-		animateBase('gris', 0);
+	{ speaker: null, text: "Ow!", choices: [], event: () => {
+		storyElement.style.fontSize = '36px';
+		shakeBit('background');
+		animateBase('gris', -500, 0, 0);
 		adiaFace.style.transform = `scaleX(1)`;
 		adiaFace.style.left = `0px`;
 		setTimeout(() => {
-			animateBase('gris', 500);
+			animateBase('gris', 500, 0, 0);
+		}, 2000);
+	} },
+	{ speaker: null, text: "He just brushed me and his scales are sharp!", choices: [], event: () => {
+		storyElement.style.fontSize = '18px';
+		animateBase('gris', 0, 0, 0);
+		adiaFace.style.transform = `scaleX(-1)`;
+		adiaFace.style.left = `-${shiftAmount}px`;
+		setTimeout(() => {
+			animateBase('gris', -500, 0, 0);
+	}, 2000);
+	} },
+	{ speaker: null, text: "How can I get Adia's attention again?", choices: [{label: "Show off in my own way", destination: 'holdBreath'}, {label: "Encourage Gris", destination: 'anteUp'}], event: () => {
+		animateBase('gris', 0, 0, 0);
+		adiaFace.style.transform = `scaleX(1)`;
+		adiaFace.style.left = `0px`;
+		setTimeout(() => {
+			animateBase('gris', 500, 0, 0);
 		}, 2000);
 	} },
 	
+	//
+	{ mark: 'holdBreath', speaker: 'me', text: "Hey Adia, look how long I can hold my breath underwater!", choices: [], event: () => {
+			animateBase('gris', 0, 0, 0);
+			adiaMood--;
+	} },
+	{ speaker: null, text: "SPLASH!", choices: [], event: () => {
+		storyElement.style.color = 'blue';
+		storyElement.style.fontSize = '36px';
+	} },
+	{ speaker: null, text: "I jumped into the water, took a deep breath, then plunged below the surface.", choices: [], event: () => {
+		storyElement.style.fontSize = '18px';
+		adiaFace.style.backgroundImage='url("resources/adiaFaceShock.webp")';
+		grisFace.style.backgroundImage='url("resources/grisFaceShock.webp")';
+	} },
+	{ speaker: null, text: "I can't see past the surface very well, but I can tell that Gris has at least stopped doing laps.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Now I just have to hold my breath long enough to not look like a wimp.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "But my lungs are already burning!  I've never actually practised this sort of thing.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Just a little more.  Just a little more.  Just a little more.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Just a little more.  Just a little more.  Just a little more.", choices: [], event: () => {
+	colorFade.style.opacity = 1;
+	} },
+	{ speaker: 'me', text: "COUGH COUGH COUGH", choices: [], event: () => {
+		baseViz('gris', 'none');
+		adiaFace.style.backgroundImage='url("resources/adiaFaceScowl.webp")';
+		colorFade.style.opacity = 0;
+	} },
+	{ speaker: 'me', text: "W-what happened?", choices: [], event: () => {
+	} },
+	{ speaker: 'adia', text: "You were showing off and passed out.", choices: [], event: () => {
+	} },
+	{ speaker: 'adia', text: "The lifeguard had to revive you.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Gris is gone, but she is not impressed.<br>", choices: [], event: () => {
+	} },
+	{ speaker: 'me', text: "I- I don't feel so well.<br>I should probably go home.", choices: [], event: () => {
+	} },
+	{ speaker: 'adia', text: "That sounds like a good idea.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Yah, she's sick of me.", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Where should I go next?", choices: [{ label: "The Park", destination: 'park2' }, { label: "The Pool", destination: 'poolReturn' }, { label: "Craft Fair", destination: 'fair2' }], event: () => {} },
 	
-		
-    { speaker: 'gris', text: "You find yourself in a mysterious forest.", choices: [{ label: "Explore the forest", destination: 'explore' }, { label: "Stay put", destination: 'beginning' }], event: () => {} },
-    {
-        mark: 'explore', speaker: null, text: "As you explore, you encounter a talking rabbit.",
-        choices: [{ label: "Talk to the rabbit", destination: 'rabbit' }, { label: "Ignore the rabbit", destination: 'beginning' }],
-        event: () => {
-			baseViz('rossi', 'show');
-			baseViz('gris', 'block');
-			setTimeout(() => {
-				animateBase('rossi', 0);
-				animateBase('gris', 0);
-			}, 200);
-        }
-    },
-    {
-        mark: 'rabbit', speaker: 'rossi', text: "The rabbit leads you to a magical portal.", choices: [{ label: "Enter the portal", destination: 'portal' }, { label: "Decline", destination: 'beginning' }],
-        event: () => {
-            shakeBit('rossi');
-			
-        }
-    },
-    {
-        mark: 'portal', speaker: null, text: "You find yourself in a different world.", choices: [], event: () => {
-			animateBase('rossi', 100);
-			setTimeout(() => {
-				baseViz('rossi', 'none');
-			}, 900);
-		}
-    },
-    {
-        speaker: null, text: "And so the adventure begins...", choices: [],
-        event: () => {
-            colorFade.style.opacity = 1;
-        }
-    },
-    // Add more story entries as needed
+	{ mark: 'anteUp', speaker: 'me', text: "HEY GRIS!", choices: [], event: () => {
+			animateBase('gris', 0, 0, 0);
+			adiaMood++;
+	} },
+	{ speaker: 'me', text: "That's really good!  How do you go so fast without your tail getting in the way?", choices: [], event: () => {
+	} },
+	{ speaker: 'gris', text: "What about my Tail-", choices: [], event: () => {
+	} },
+	{ speaker: 'gris', text: "Whoa! OOF!", choices: [], event: () => {
+	storyElement.style.fontSize = '36px';
+	grisFace.style.backgroundImage='url("resources/grisFaceShock.webp")';
+	adiaFace.style.backgroundImage='url("resources/adiaFaceShock.webp")';
+	shakeBit('gris');
+	setTimeout(() => {
+		animateBase('gris', 5, 5, -23);		
+	}, 1000);
+	} },
+	{ speaker: null, text: "He tripped over his tail.<br>I guess he's never had to think about it before...", choices: [], event: () => {
+	storyElement.style.fontSize = '18px';
+	} },
+	{ speaker: 'adia', text: "Oh no... Gris!<br>Are you alright?", choices: [], event: () => {
+	} },
+	{ speaker: 'gris', text: "I really hurt my tail bone.  I- I think I should go home.", choices: [], event: () => {
+	} },
+	{ speaker: 'adia', text: "Oh no...", choices: [], event: () => {
+	animateBase('gris',-100,5,-23);
+	} },
+	{ speaker: 'adia', text: "That's too bad.", choices: [], event: () => { } },
+	{ speaker: 'adia', text: "But Gris is pretty clumsy.<br>He hurts himself fairly often.", choices: [], event: () => {
+	baseViz('gris', 'none');
+	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+	} },
+	{ speaker: 'adia', text: "Do you want to play some water volleyball?", choices: [], event: () => {
+	} },
+	{ speaker: 'me', text: "I do!", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Wow, what a great start to the day!", choices: [], event: () => {
+	} },
+	{ speaker: null, text: "Wow, what a great start to the day!", choices: [], event: () => {
+	colorFade.style.opacity = 1;
+	} },
+	
+	
+	{ mark: 'park2', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
+    background.style.backgroundImage = 'url("resources/bgPark.webp")';
+    animateBase('rossi', 0, 0, 0);
+    animateBase('gris', 0, 0, 0);
+    animateBase('adia', 0, 0, 0);
+    baseViz('rossi', 'show');
+	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
+    grisBottom.style.display='block';
+	grisTop.style.display='block';
+    baseViz('gris', 'show');
+    adiaHairBack.style.display='block';
+    adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
+	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+    adiaTop.style.display='block';
+	adiaBottom.style.display='block';
+	baseViz('adia', 'show');
+    storyElement.style.color = 'black';
+    setTimeout(() => {
+        colorFade.style.opacity = 0;
+    }, 500);
+	} },
+	{ mark: 'fair2', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
+    background.style.backgroundImage = 'url("resources/bgPark.webp")';
+    animateBase('rossi', 0, 0, 0);
+    animateBase('gris', 0, 0, 0);
+    animateBase('adia', 0, 0, 0);
+    baseViz('rossi', 'show');
+	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
+    grisBottom.style.display='block';
+	grisTop.style.display='block';
+    baseViz('gris', 'show');
+    adiaHairBack.style.display='block';
+    adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
+	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+    adiaTop.style.display='block';
+	adiaBottom.style.display='block';
+	baseViz('adia', 'show');
+    storyElement.style.color = 'black';
+    setTimeout(() => {
+        colorFade.style.opacity = 0;
+    }, 500);
+	} },
+	{ mark: 'poolReturn', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
+    background.style.backgroundImage = 'url("resources/bgPark.webp")';
+    animateBase('rossi', 0, 0, 0);
+    animateBase('gris', 0, 0, 0);
+    animateBase('adia', 0, 0, 0);
+    baseViz('rossi', 'show');
+	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
+    grisBottom.style.display='block';
+	grisTop.style.display='block';
+    baseViz('gris', 'show');
+    adiaHairBack.style.display='block';
+    adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
+	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+    adiaTop.style.display='block';
+	adiaBottom.style.display='block';
+	baseViz('adia', 'show');
+    storyElement.style.color = 'black';
+    setTimeout(() => {
+        colorFade.style.opacity = 0;
+    }, 500);
+	} },
+	{ mark: 'poolMiss', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
+    background.style.backgroundImage = 'url("resources/bgPark.webp")';
+    animateBase('rossi', 0, 0, 0);
+    animateBase('gris', 0, 0, 0);
+    animateBase('adia', 0, 0, 0);
+    baseViz('rossi', 'show');
+	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
+    grisBottom.style.display='block';
+	grisTop.style.display='block';
+    baseViz('gris', 'show');
+    adiaHairBack.style.display='block';
+    adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
+	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
+    adiaTop.style.display='block';
+	baseViz('adia', 'show');
+	adiaBottom.style.display='block';
+    storyElement.style.color = 'black';
+    setTimeout(() => {
+        colorFade.style.opacity = 0;
+    }, 500);
+	} },
+	
+	//{ mark: 'park2', 'poolMiss', 'poolReturn', 'fair2'},
+	
 ];
 
 	const bookmarkIndexes = {};
@@ -560,10 +721,10 @@
 }
 
 
-    function animateBase(character, translateX) {
-        const base = characterBases[character];
-            base.style.transform = `translateX(${translateX}%)`;
-    }
+    function animateBase(character, translateX, translateY, rotateDeg) {
+		const base = characterBases[character];
+		base.style.transform = `translate(${translateX}%, ${translateY}%) rotate(${rotateDeg}deg)`;
+	}
 
     function baseViz(character, viz) {
         const base = characterBases[character];
@@ -586,7 +747,6 @@
 			}, 200); // Adjust the delay as needed
 		}
 	}
-
 
     displayStory();
 </script>
