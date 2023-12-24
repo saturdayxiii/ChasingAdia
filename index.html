@@ -122,14 +122,14 @@
             height: 70%;
             background-size: contain;
             background-repeat: no-repeat;
-            position: absolute;
+            background-position: center;
+			position: absolute;
 			z-index: 2;
-            transition: transform 1s ease-in-out;
         }
 
         #adia {
             background-image: url("resources/adiaBase.webp");
-            right: -40vw;
+			right: -15vw;
 			bottom: 5vh;
 			z-index: 3;
         }
@@ -172,7 +172,7 @@
 
         #rossi {
             background-image: url("resources/rossiBase.webp");
-            right: -20vw;
+            right: -5vw;
 			bottom: 5vh;
 			z-index: 4;
         }
@@ -185,7 +185,7 @@
 
         #gris {
             background-image: url("resources/grisBase.webp");
-            left: 10vw;
+            left: -10vw;
 			bottom: 5vh;
 			z-index: 2;
         }
@@ -236,11 +236,13 @@
 <div id="colorFade"></div>
 
 <script>
-    const characterBases = {
-        adia: document.getElementById('adia'),
-        rossi: document.getElementById('rossi'),
-        gris: document.getElementById('gris'),
-    };
+	const characterTraits = {
+		me: { color: 'black', displayName: 'ME' },
+		rossi: { color: 'brown', displayName: 'ROSSI' },
+		gris: { color: 'green', displayName: 'GRIS' },
+		adia: { color: 'skyblue', displayName: 'ADIA' },
+		// Add more characters as needed
+	};
 
     const background = document.getElementById('background');
     const storyElement = document.getElementById('story');
@@ -248,26 +250,85 @@
     const choicesElement = document.getElementById('choices');
     const colorFade = document.getElementById('colorFade');
 	const screenWidth = window.innerWidth || document.documentElement.clientWidth;
-	const shiftAmount = screenWidth * 0.545;
 
-    colorFade.style.opacity = 1;
+    colorFade.style.opacity = 1; // Very first screen starts out blacked out
 	let getBracelet = 0;
 	let adiaMeet = 0;
 	let adiaMood = 0;
 	let grisMeet = 0;
 	let grisMood = 0;
 	let rossiMood = 0;
+	
+	function divViz(elementId, viz) {
+        const element = document.getElementById(elementId);
+		if (viz == 'show') {
+			viz = 'block';
+		}
+            element.style.display = viz;
+    }
+	
+	function moveDiv(elementId, translateX, translateY, rotateDeg, timing) {
+		const element = document.getElementById(elementId);
+		element.style.transform = `translate(${translateX}%, ${translateY}%) rotate(${rotateDeg}deg)`;
+		element.style.transition = 'transform ' + timing + 's ease-in-out';
+	  setTimeout(() => {
+		element.style.transition = ''; // Reset transition after animation
+	  }, timing * 1000); // Use timing variable for the setTimeout delay
+	}
+	
+	function flipDiv(elementId, timing) {
+	  const element = document.getElementById(elementId);
+	  let isFlipped = element.dataset.flipped === 'true' || false;
+
+	  // Toggle the flipped state
+	  isFlipped = !isFlipped;
+
+	  // Apply the scaleX transformation based on the flipped state
+	  const newScaleX = isFlipped ? -1 : 1;
+	  element.style.transform = `scaleX(${newScaleX})`;
+
+	  // Update the dataset attribute
+	  element.dataset.flipped = isFlipped.toString();
+
+	  element.style.transition = 'transform ' + timing + 's ease-in-out';
+	  setTimeout(() => {
+		element.style.transition = ''; // Reset transition after animation
+	  }, timing * 1000); // Use timing variable for the setTimeout delay
+	}
+	
+	function shakeDiv(elementId, timing, repetitions) {
+	  const element = document.getElementById(elementId);
+	  const originalPosition = element.style.transform;
+
+	  element.style.transition = 'transform ' + timing + 's ease-in-out';
+
+	  // Apply the shake animation using translateX
+	  const shake = () => {
+		const randomFactor = (Math.random() - 0.5) * 20; // Adjust the intensity of the shake
+		element.style.transform = `translateX(${randomFactor}px)`;
+
+		// Reset position after animation
+		setTimeout(() => {
+		  element.style.transform = originalPosition;
+		}, timing * 1000);
+	  };
+
+	  // Execute the shake animation for the specified number of repetitions
+	  for (let i = 0; i < repetitions; i++) {
+		setTimeout(shake, i * timing * 1000 * 2); // Multiply by 2 to account for both the shake and reset
+	  }
+	}
 
     const storyData = [
     { 
         mark: 'beginning', speaker: null, text: "Start", choices: [], event: () => {
 			background.style.backgroundImage = 'resources/bgRoom.webp';
-			baseViz('gris', 'none');
-			baseViz('rossi', 'none');
-			baseViz('adia', 'none');
-			animateBase('gris', -100, 0, 0);
-			animateBase('rossi', 100, 0, 0);
-			animateBase('adia', 100, 0, 0);
+			divViz('gris', 'none');
+			divViz('rossi', 'none');
+			divViz('adia', 'none');
+			moveDiv('gris', -100, 0, 0, 1);
+			moveDiv('rossi', 100, 0, 0, 1);
+			moveDiv('adia', 100, 0, 0, 1);
         }
     },
     { speaker: null, text: "YEEEAAAWWWNN~  Morning all ready?", choices: [], event: () => {
@@ -351,10 +412,10 @@
 		
 	} },
 	{ speaker: 'adia', text: "Umm, hello.<br>Do I know you?", choices: [{ label: "No, but I know you!", destination: 'uNoMe' }, { label: "I'm a neighbor.", destination: 'meNeighbor' }], event: () => {
-		baseViz('adia', 'show');
+		divViz('adia', 'show');
 		adiaMeet = 1;
 		setTimeout(() => {
-			animateBase('adia', 0, 0, 0);
+			moveDiv('adia', 0, 0, 0, 1);
 		}, 200);
 	} },
 	{ mark: 'uNoMe', speaker: 'me', text: "No, but I know all about you!<br>I follow you, your crafts, and your cat on instagram!<br>Hey, are your brothers here too?", choices: [], event: () => {
@@ -364,9 +425,9 @@
 		adiaMood - 3; 
 	} },
 	{ speaker: null, text: "Oh...", choices: [], event: () => {
-		animateBase('adia', 100, 0, 0); 
+		moveDiv('adia', 100, 0, 0, 1); 
 		setTimeout(() => {
-			baseViz('adia', 'none');
+			divViz('adia', 'none');
 		}, 1000);
 	} },
 	{ speaker: null, text: "I feel very demotivated...", choices: [{ label: "oof", destination: 'morningMiss' }], event: () => {
@@ -392,10 +453,10 @@
 		storyElement.style.fontSize = '18px';
 	} },
 	{ speaker: 'gris', text: "I didn't think you get up this early.", choices: [], event: () => {
-		baseViz('gris', 'show');
+		divViz('gris', 'show');
 		grisMeet = 1;
 		setTimeout(() => {
-			animateBase('gris', 0, 0, 0);
+			moveDiv('gris', 0, 0, 0, 1);
 		}, 200);
 	} },
 	{ speaker: 'gris', text: "Who's this wet noodle?", choices: [], event: () => {
@@ -411,60 +472,54 @@
 		
 	} },
 	{ speaker: 'adia', text: "Uh, okay.", choices: [], event: () => {
-		animateBase('gris', 2000, 0, 0);
-		adiaFace.style.transform = `scaleX(-1)`;
-		adiaFace.style.left = `-${shiftAmount}px`;
+		moveDiv('gris', 150, 0, 0, 0.25);
+		flipDiv('adiaFace');
 		setTimeout(() => {
-			animateBase('gris', -0, 0, 0);
-		}, 2000);
+			moveDiv('gris', 0, 0, 0, 0.5);
+		}, 500);
 	} },
 	{ speaker: null, text: "Oh geeze.", choices: [], event: () => {
-		animateBase('gris', -500, 0, 0);
-		adiaFace.style.transform = `scaleX(1)`;
-		adiaFace.style.left = `0px`;
+		moveDiv('gris', -100, 0, 0, 0.5);
+		flipDiv('adiaFace');
 		setTimeout(() => {
-			animateBase('gris', 500, 0, 0);
-		}, 2000);
+			moveDiv('gris', 150, 0, 0, 0.5);
+		}, 1000);
 	} },
 	{ speaker: null, text: "I don't think he's going to stop.", choices: [], event: () => {
-		animateBase('gris', 0, 0, 0);
-		adiaFace.style.transform = `scaleX(-1)`;
-		adiaFace.style.left = `-${shiftAmount}px`;
+		moveDiv('gris', 0, 0, 0, 0.5);
+		flipDiv('adiaFace',0);
 		setTimeout(() => {
-			animateBase('gris', -500, 0, 0);
-		}, 2000);
+			moveDiv('gris', -100, 0, 0, 0.5);
+		}, 1000);
 	} },
 	{ speaker: null, text: "Ow!", choices: [], event: () => {
 		storyElement.style.fontSize = '36px';
-		shakeBit('background');
-		animateBase('gris', -500, 0, 0);
-		adiaFace.style.transform = `scaleX(1)`;
-		adiaFace.style.left = `0px`;
+		shakeDiv('background', 0.25, 4);
+		moveDiv('gris', -100, 0, 0, 0.5);
+		flipDiv('adiaFace',0);
 		setTimeout(() => {
-			animateBase('gris', 500, 0, 0);
-		}, 2000);
+			moveDiv('gris', 150, 0, 0, 0.5);
+		}, 1000);
 	} },
 	{ speaker: null, text: "He just brushed me and his scales are sharp!", choices: [], event: () => {
 		storyElement.style.fontSize = '18px';
-		animateBase('gris', 0, 0, 0);
-		adiaFace.style.transform = `scaleX(-1)`;
-		adiaFace.style.left = `-${shiftAmount}px`;
+		moveDiv('gris', 0, 0, 0, 1);
+		flipDiv('adiaFace',0);
 		setTimeout(() => {
-			animateBase('gris', -500, 0, 0);
-	}, 2000);
+			moveDiv('gris', -100, 0, 0, 0.5);
+	}, 1000);
 	} },
 	{ speaker: null, text: "How can I get Adia's attention again?", choices: [{label: "Show off in my own way", destination: 'holdBreath'}, {label: "Encourage Gris", destination: 'anteUp'}], event: () => {
-		animateBase('gris', 0, 0, 0);
-		adiaFace.style.transform = `scaleX(1)`;
-		adiaFace.style.left = `0px`;
+		moveDiv('gris', 0, 0, 0, 1);
+		flipDiv('adiaFace',0);
 		setTimeout(() => {
-			animateBase('gris', 500, 0, 0);
-		}, 2000);
+			moveDiv('gris', 150, 0, 0, 0.5);
+		}, 1000);
 	} },
 	
 	//
 	{ mark: 'holdBreath', speaker: 'me', text: "Hey Adia, look how long I can hold my breath underwater!", choices: [], event: () => {
-			animateBase('gris', 0, 0, 0);
+			moveDiv('gris', 0, 0, 0, 1);
 			adiaMood--;
 	} },
 	{ speaker: null, text: "SPLASH!", choices: [], event: () => {
@@ -488,7 +543,7 @@
 	colorFade.style.opacity = 1;
 	} },
 	{ speaker: 'me', text: "COUGH COUGH COUGH", choices: [], event: () => {
-		baseViz('gris', 'none');
+		divViz('gris', 'none');
 		adiaFace.style.backgroundImage='url("resources/adiaFaceScowl.webp")';
 		colorFade.style.opacity = 0;
 	} },
@@ -509,7 +564,7 @@
 	{ speaker: null, text: "Where should I go next?", choices: [{ label: "The Park", destination: 'park2' }, { label: "The Pool", destination: 'poolReturn' }, { label: "Craft Fair", destination: 'fair2' }], event: () => {} },
 	
 	{ mark: 'anteUp', speaker: 'me', text: "HEY GRIS!", choices: [], event: () => {
-			animateBase('gris', 0, 0, 0);
+			moveDiv('gris', 0, 0, 0, 1);
 			adiaMood++;
 	} },
 	{ speaker: 'me', text: "That's really good!  How do you go so fast without your tail getting in the way?", choices: [], event: () => {
@@ -520,9 +575,9 @@
 	storyElement.style.fontSize = '36px';
 	grisFace.style.backgroundImage='url("resources/grisFaceShock.webp")';
 	adiaFace.style.backgroundImage='url("resources/adiaFaceShock.webp")';
-	shakeBit('gris');
+	shakeDiv('gris', 0.10, 4);
 	setTimeout(() => {
-		animateBase('gris', 5, 5, -23);		
+		moveDiv('gris', 5, 20, -23, 1);		
 	}, 1000);
 	} },
 	{ speaker: null, text: "He tripped over his tail.<br>I guess he's never had to think about it before...", choices: [], event: () => {
@@ -533,11 +588,11 @@
 	{ speaker: 'gris', text: "I really hurt my tail bone.  I- I think I should go home.", choices: [], event: () => {
 	} },
 	{ speaker: 'adia', text: "Oh no...", choices: [], event: () => {
-	animateBase('gris',-100,5,-23);
+	moveDiv('gris',-100,20,-23, 1);
 	} },
 	{ speaker: 'adia', text: "That's too bad.", choices: [], event: () => { } },
 	{ speaker: 'adia', text: "But Gris is pretty clumsy.<br>He hurts himself fairly often.", choices: [], event: () => {
-	baseViz('gris', 'none');
+	divViz('gris', 'none');
 	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
 	} },
 	{ speaker: 'adia', text: "Do you want to play some water volleyball?", choices: [], event: () => {
@@ -553,20 +608,20 @@
 	
 	{ mark: 'park2', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
     background.style.backgroundImage = 'url("resources/bgPark.webp")';
-    animateBase('rossi', 0, 0, 0);
-    animateBase('gris', 0, 0, 0);
-    animateBase('adia', 0, 0, 0);
-    baseViz('rossi', 'show');
+    moveDiv('rossi', 0, 0, 0, 1);
+    moveDiv('gris', 0, 0, 0, 1);
+    moveDiv('adia', 0, 0, 0, 1);
+    divViz('rossi', 'show');
 	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
     grisBottom.style.display='block';
 	grisTop.style.display='block';
-    baseViz('gris', 'show');
+    divViz('gris', 'show');
     adiaHairBack.style.display='block';
     adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
 	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
     adiaTop.style.display='block';
 	adiaBottom.style.display='block';
-	baseViz('adia', 'show');
+	divViz('adia', 'show');
     storyElement.style.color = 'black';
     setTimeout(() => {
         colorFade.style.opacity = 0;
@@ -574,20 +629,20 @@
 	} },
 	{ mark: 'fair2', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
     background.style.backgroundImage = 'url("resources/bgPark.webp")';
-    animateBase('rossi', 0, 0, 0);
-    animateBase('gris', 0, 0, 0);
-    animateBase('adia', 0, 0, 0);
-    baseViz('rossi', 'show');
+    moveDiv('rossi', 0, 0, 0, 1);
+    moveDiv('gris', 0, 0, 0, 1);
+    moveDiv('adia', 0, 0, 0, 1);
+    divViz('rossi', 'show');
 	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
     grisBottom.style.display='block';
 	grisTop.style.display='block';
-    baseViz('gris', 'show');
+    divViz('gris', 'show');
     adiaHairBack.style.display='block';
     adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
 	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
     adiaTop.style.display='block';
 	adiaBottom.style.display='block';
-	baseViz('adia', 'show');
+	divViz('adia', 'show');
     storyElement.style.color = 'black';
     setTimeout(() => {
         colorFade.style.opacity = 0;
@@ -595,20 +650,20 @@
 	} },
 	{ mark: 'poolReturn', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
     background.style.backgroundImage = 'url("resources/bgPark.webp")';
-    animateBase('rossi', 0, 0, 0);
-    animateBase('gris', 0, 0, 0);
-    animateBase('adia', 0, 0, 0);
-    baseViz('rossi', 'show');
+    moveDiv('rossi', 0, 0, 0, 1);
+    moveDiv('gris', 0, 0, 0, 1);
+    moveDiv('adia', 0, 0, 0, 1);
+    divViz('rossi', 'show');
 	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
     grisBottom.style.display='block';
 	grisTop.style.display='block';
-    baseViz('gris', 'show');
+    divViz('gris', 'show');
     adiaHairBack.style.display='block';
     adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
 	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
     adiaTop.style.display='block';
 	adiaBottom.style.display='block';
-	baseViz('adia', 'show');
+	divViz('adia', 'show');
     storyElement.style.color = 'black';
     setTimeout(() => {
         colorFade.style.opacity = 0;
@@ -616,19 +671,19 @@
 	} },
 	{ mark: 'poolMiss', text: "This is as far as uncle got before Christmas.<br>Like, share, subscribe, and click the bell for more.", choices: [], event: () => {
     background.style.backgroundImage = 'url("resources/bgPark.webp")';
-    animateBase('rossi', 0, 0, 0);
-    animateBase('gris', 0, 0, 0);
-    animateBase('adia', 0, 0, 0);
-    baseViz('rossi', 'show');
+    moveDiv('rossi', 0, 0, 0, 1);
+    moveDiv('gris', 0, 0, 0, 1);
+    moveDiv('adia', 0, 0, 0, 1);
+    divViz('rossi', 'show');
 	grisFace.style.backgroundImage = 'url("resources/grisFaceSmile.webp")';
     grisBottom.style.display='block';
 	grisTop.style.display='block';
-    baseViz('gris', 'show');
+    divViz('gris', 'show');
     adiaHairBack.style.display='block';
     adiaHair.style.backgroundImage = 'url("resources/adiaHair.webp")';
 	adiaFace.style.backgroundImage = 'url("resources/adiaFaceSmile.webp")';
     adiaTop.style.display='block';
-	baseViz('adia', 'show');
+	divViz('adia', 'show');
 	adiaBottom.style.display='block';
     storyElement.style.color = 'black';
     setTimeout(() => {
@@ -649,14 +704,6 @@
 	});
 
     let currentIndex = 0;
-
-    const characterTraits = {
-		me: { color: 'black', displayName: 'ME' },
-		rossi: { color: 'brown', displayName: 'ROSSI' },
-		gris: { color: 'green', displayName: 'GRIS' },
-		adia: { color: 'skyblue', displayName: 'ADIA' },
-		// Add more characters as needed
-	};
 
 	function displayStory() {
 		const currentStory = storyData[currentIndex];
@@ -707,45 +754,17 @@
 	}
 
     function handleContinue() {
-    const currentStory = storyData[currentIndex];
+		const currentStory = storyData[currentIndex];
 
-    if (currentStory.choices.length > 0) {
-        const destinationBookmark = currentStory.choices[0].destination;
-        const destinationIndex = bookmarkIndexes[destinationBookmark];
-        currentIndex = destinationIndex;
-    } else {
-        currentIndex++;
-    }
-
-    displayStory();
-}
-
-
-    function animateBase(character, translateX, translateY, rotateDeg) {
-		const base = characterBases[character];
-		base.style.transform = `translate(${translateX}%, ${translateY}%) rotate(${rotateDeg}deg)`;
-	}
-
-    function baseViz(character, viz) {
-        const base = characterBases[character];
-		if (viz == 'show') {
-			viz = 'block';
+		if (currentStory.choices.length > 0) {
+			const destinationBookmark = currentStory.choices[0].destination;
+			const destinationIndex = bookmarkIndexes[destinationBookmark];
+			currentIndex = destinationIndex;
+		} else {
+			currentIndex++;
 		}
-            base.style.display = viz;
-    }
-	
-	function shakeBit(elementId) {
-		const element = document.getElementById(elementId);
 
-		if (element) {
-			element.style.animation = 'none'; // Reset animation
-			void element.offsetWidth; // Trigger reflow
-
-			// Apply shake animation after a short delay
-			setTimeout(() => {
-				element.style.animation = 'shake 0.5s 4';
-			}, 200); // Adjust the delay as needed
-		}
+		displayStory();
 	}
 
     displayStory();
