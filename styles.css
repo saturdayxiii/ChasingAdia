@@ -1,0 +1,234 @@
+body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+		.optionsButton {
+			position: fixed;
+			top: 0%;
+			right: 0%;
+			float: right;
+			width: 15px;
+			height: 15px;
+			background-color: pink;
+			border: 2px solid skyblue;
+			z-index: 99;
+			box-shadow: 3px rgba(0,0,0,0.1);
+		}
+		.options {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+
+        /* Style for the close button in the modal */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			background-color: black;
+            background-image: url("resources/bgRoom.webp");
+			background-size: cover;
+            
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+        }
+
+        #colorFade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			z-index: 999;
+            pointer-events: none;
+            background-color: rgba(0, 0, 0, 1); /* Set initial opacity to 1 */
+            transition: opacity 2s ease-in-out; /* Add a transition for smooth opacity change */
+        }
+		
+		#overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+			z-index: 99;
+            pointer-events: none;
+            background-color: rgba(0, 0, 0, 1); /* Set initial opacity to 1 */
+            transition: opacity 2s ease-in-out; /* Add a transition for smooth opacity change */
+        }
+
+        #story-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 20%;
+			z-index: 100;
+            border: 2px solid blue;
+            border-radius: 25px;
+            background-color: white;
+            /* overflow: hidden;*/
+            display: flex;
+            flex-direction: column; /* Ensure choices stack vertically */
+            align-items: center; /* Center content horizontally */
+            justify-content: flex-end; /* Align content to the bottom of the container */
+        }
+
+        #story {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 10px;
+            cursor: pointer;
+            height: 80%;
+            overflow-y: auto;
+        }
+
+        #speaker {
+            display: none;
+            position: absolute;
+            left: 2%;
+            top: 0;
+			transform: translateY(-95%);
+            width: 15%;
+			z-index: 101;
+            font-size: 20px;
+            padding: 5px;
+            border-style: solid;
+            border-color: blue;
+            border-width: 2px 2px 0 2px;
+			border-radius: 10px;
+			background-color: white;
+        }
+
+        .choice {
+            font-size: 16px;
+			color: black;
+            margin: 5px;
+            cursor: pointer;
+            text-decoration: underline;
+            width: 100%; /* Ensure choices take full width */
+        }
+
+        .base {
+            width: 70%;
+            height: 70%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+			position: absolute;
+			z-index: 2;
+        }
+
+        #adia {
+            background-image: url("resources/adiaBase.webp");
+			right: -15vw;
+			bottom: 5vh;
+			z-index: 3;
+        }
+		#adiaFace {
+            background-image: url("resources/adiaFaceScowl.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaHairBack {
+            background-image: url("resources/adiaHairBack.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaHair {
+            background-image: url("resources/adiaHairWet.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaTop {
+            background-image: url("resources/adiaJacket.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaBottom {
+            background-image: url("resources/adiaPants.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#adiaAccessory {
+            background-image: url("resources/adiaBracelet.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+
+        #rossi {
+            background-image: url("resources/rossiBase.webp");
+            right: -5vw;
+			bottom: 5vh;
+			z-index: 4;
+        }
+		#rossiFace {
+            background-image: url("resources/rossiFaceSmile.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+
+        #gris {
+            background-image: url("resources/grisBase.webp");
+            left: -10vw;
+			bottom: 5vh;
+			z-index: 2;
+        }
+		#grisFace {
+            background-image: url("resources/grisFaceSmile.webp");
+			display: block;
+			width: 100%;
+			height: 100%;
+        }
+		#grisTop {
+            background-image: url("resources/grisTop.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }
+		#grisBottom {
+            background-image: url("resources/grisBottom.webp");
+			display: none;
+			width: 100%;
+			height: 100%;
+        }

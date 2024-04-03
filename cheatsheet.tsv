@@ -1,0 +1,24 @@
+#	Function	Description
+01	divViz(elementId, viz)	Show or hide a specified element.
+
+02	moveDiv(elementId, translateX, translateY, rotateDeg, timing)	Move and rotate a specified element.
+
+03	flipDiv(elementId, timing)	Flip a specified element horizontally.
+
+04	shakeDiv(elementId, timing, repetitions)	Shake a specified element horizontally.
+
+05	playSoundEffect(soundFile)	Play a sound effect.
+
+06	adjustVolume(audioElementId, volume)	Adjust the volume of an audio element.
+
+07	openModal()	Open a modal; probably a menu window.
+
+08	closeModal()	Close a modal; probably a menu window.
+
+09	setCookie(name, value, days)	Set a cookie with a specified name, value, and expiration date.
+
+10	getCookie(name)	Get the value of a cookie by name.
+
+11	saveVolumeLevels()	Save the volume levels of background audio and sound effects to cookies.
+
+12	loadVolumeLevels()	Load the volume levels of background audio and sound effects from cookies.
